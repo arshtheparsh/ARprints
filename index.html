@@ -13,7 +13,6 @@
       --bg:#0a0a0c; --text:#f5f5f7; --muted:#9a9aa6;
       --line:rgba(255,255,255,.12); --accent:#22d3ee; /* change this one line to recolor */
       --bg-light:#f5f6f7; --ink:#14151a; --ink-muted:#5b5e66; --line-light:rgba(20,21,26,.12); --surface:#ffffff;
-      --hair:#d5d7da; --orange:#c2410c; /* nylon-gray hairline + industrial-orange material accent */
       --font-d:'Space Grotesk',system-ui,sans-serif;
       --font-b:'Inter',system-ui,sans-serif;
       --font-m:'JetBrains Mono',ui-monospace,monospace;
@@ -83,47 +82,28 @@
     .to-black{height:58vh;min-height:420px;background:linear-gradient(180deg,
       var(--bg-light) 0%,#dddee1 8%,#b5b9be 18%,#878c94 30%,#5d626b 41%,#3d4147 51%,#25282e 61%,#15171b 73%,#0c0d10 86%,#0a0a0c 100%)}
 
-    /* projects — engineering datasheet (stark white, sharp, monospace specs) */
-    .projects{background:var(--bg-light);color:var(--ink);padding:8px 0 104px}
-    .projects .wrap{max-width:1160px;margin:0 auto;padding:0 28px}
-    .ds-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;
-      padding-bottom:14px;margin-bottom:24px;border-bottom:1px solid var(--hair)}
-    .projects h2{font-family:var(--font-d);font-weight:700;font-size:clamp(1.7rem,3.4vw,2.4rem);letter-spacing:-.02em;color:var(--ink)}
-    .ds-count{font-family:var(--font-m);font-size:.76rem;color:var(--ink-muted)}
-
-    .ds-grid{display:grid;gap:16px}
-    .ds-entry{border:1px solid var(--hair);background:#fff;transition:border-color .08s linear}
-    .ds-feature{display:grid;grid-template-columns:1.18fr 1fr;color:var(--ink)}
-    a.ds-feature:hover{border-color:var(--orange)}
-    .ds-visual{position:relative;background:#f1f2f4;border-right:1px solid var(--hair);min-height:360px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .ds-visual model-viewer{width:100%;height:100%;background:transparent;pointer-events:none}
-    .ds-partno{position:absolute;top:12px;left:13px;font-family:var(--font-m);font-size:.72rem;letter-spacing:.05em;color:var(--orange)}
-    .ds-macro{position:absolute;bottom:12px;left:13px;font-family:var(--font-m);font-size:.72rem;letter-spacing:.03em;color:var(--ink-muted)}
-    .ds-data{padding:26px 26px 24px;display:flex;flex-direction:column;gap:16px}
-    .ds-title{font-family:var(--font-d);font-weight:600;font-size:1.35rem;letter-spacing:-.01em;color:var(--ink)}
-    .ds-desc{font-size:.95rem;line-height:1.55;color:var(--ink-muted);max-width:52ch;margin-top:6px}
-    .ds-tags{display:flex;gap:8px;flex-wrap:wrap}
-    .ds-tag{font-family:var(--font-m);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);border:1px solid var(--hair);padding:6px 11px}
-    .ds-tag.on{color:var(--orange);border-color:var(--orange)}
-    .ds-specs{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px;padding-top:16px;border-top:1px solid var(--hair);margin:0}
-    .ds-spec{display:flex;flex-direction:column;gap:3px}
-    .ds-spec dt{font-family:var(--font-m);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted)}
-    .ds-spec dd{font-family:var(--font-m);font-size:.9rem;color:var(--ink);margin:0}
-    .ds-open{align-self:flex-start;margin-top:auto;font-family:var(--font-m);font-size:.8rem;color:var(--ink);border-bottom:1px solid var(--orange);padding-bottom:2px;transition:color .08s linear}
-    a.ds-feature:hover .ds-open{color:var(--orange)}
-
-    .ds-reserved{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .ds-slot{min-height:158px;padding:18px 19px;display:flex;flex-direction:column;justify-content:space-between;
-      background:repeating-linear-gradient(45deg,#f1f2f4,#f1f2f4 9px,#eaecef 9px,#eaecef 18px)}
-    .ds-slot .ds-partno{position:static;color:var(--ink-muted)}
-    .ds-slot-label{font-family:var(--font-d);font-weight:600;font-size:1.05rem;color:var(--ink-muted)}
-    .ds-slot-sub{font-family:var(--font-m);font-size:.72rem;color:var(--ink-muted);margin-top:2px}
-
-    @media (max-width:760px){
-      .ds-feature{grid-template-columns:1fr}
-      .ds-visual{border-right:0;border-bottom:1px solid var(--hair);min-height:260px}
-      .ds-reserved{grid-template-columns:1fr}
-    }
+    /* projects (light) */
+    .projects{background:var(--bg-light);color:var(--ink);padding:8px 0 96px}
+    .projects .wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+    .projects-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:34px}
+    .projects h2{font-family:var(--font-d);font-weight:700;font-size:clamp(1.8rem,3.6vw,2.6rem);letter-spacing:-.02em;color:var(--ink)}
+    .legend{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:.76rem;color:var(--ink-muted)}
+    .legend .ld{width:10px;height:10px;border-radius:50%;background:#16a34a}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+    .card{position:relative;display:block;border:1px solid var(--line-light);border-radius:16px;overflow:hidden;background:var(--surface);color:var(--ink);
+      transition:transform .2s ease,box-shadow .2s ease}
+    a.card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(20,21,26,.10)}
+    .card .thumb{aspect-ratio:4/3;background:#e9ebee;display:flex;align-items:center;justify-content:center;color:#5b616b;font-family:var(--font-m);font-size:.78rem;border-bottom:1px solid var(--line-light);overflow:hidden}
+    .card .thumb.thumb-3d{padding:0}
+    .card .thumb.thumb-3d model-viewer{width:100%;height:100%;background:transparent;pointer-events:none}
+    .card .body{padding:18px 20px 22px}
+    .card h3{font-family:var(--font-d);font-weight:600;font-size:1.15rem;margin:0 0 6px;color:var(--ink)}
+    .card .body p{margin:0 0 14px;color:var(--ink-muted);font-size:.94rem;line-height:1.5}
+    .tags{display:flex;flex-wrap:wrap;gap:7px}
+    .tags span{font-family:var(--font-m);font-size:.72rem;color:var(--ink-muted);background:#e9ebee;border:1px solid var(--line-light);padding:3px 9px;border-radius:6px}
+    .printable-dot{position:absolute;top:14px;right:14px;z-index:3;width:12px;height:12px;border-radius:50%;background:#16a34a;border:2px solid #fff;box-shadow:0 0 0 1px rgba(20,21,26,.06)}
+    .card.coming{cursor:default}
+    .card.coming h3{color:var(--ink-muted)}
 
     /* custom request (dark) */
     .custom{position:relative;z-index:1;padding:104px 0 96px;color:var(--text)}
@@ -212,62 +192,45 @@
   <!-- black → white -->
   <div class="to-white" aria-hidden="true"></div>
 
-  <!-- ============ PROJECTS — engineering datasheet ============ -->
+  <!-- ============ PROJECTS (light) ============ -->
   <section class="projects" id="projects">
     <div class="wrap">
-      <div class="ds-head">
+      <div class="projects-head">
         <h2>Everything I've designed so far</h2>
-        <span class="ds-count">1 documented, 2 in progress</span>
+        <span class="legend"><i class="ld"></i> = 3D printable</span>
       </div>
+      <div class="grid">
 
-      <div class="ds-grid">
-        <a class="ds-entry ds-feature" href="project-headphone-stand.html">
-          <div class="ds-visual">
-            <span class="ds-partno">HS-01</span>
+        <a class="card" href="project-headphone-stand.html">
+          <span class="printable-dot" title="3D printable"></span>
+          <div class="thumb thumb-3d">
             <model-viewer src="models/headphone-stand.glb" alt="Headphone stand 3D model"
-              auto-rotate rotation-per-second="26deg" interaction-prompt="none" disable-zoom
-              shadow-intensity="0.35" camera-orbit="30deg 75deg auto"></model-viewer>
-            <!-- TODO: macro photo of the printed part (layer lines), ~1600x1200 -->
-            <span class="ds-macro">Macro photo pending</span>
+              auto-rotate rotation-per-second="28deg" interaction-prompt="none" disable-zoom
+              shadow-intensity="0.4" camera-orbit="30deg 75deg auto"></model-viewer>
           </div>
-          <div class="ds-data">
-            <div>
-              <div class="ds-title">Headphone Stand</div>
-              <p class="ds-desc">A wall-mounted stand with an extra hook for keys or anything else.</p>
-            </div>
-            <div class="ds-tags">
-              <span class="ds-tag on">Printable</span>
-              <span class="ds-tag">Fusion 360</span>
-              <span class="ds-tag">FDM</span>
-            </div>
-            <dl class="ds-specs">
-              <div class="ds-spec"><dt>Process</dt><dd>FDM</dd></div>
-              <div class="ds-spec"><dt>Mount</dt><dd>Wall</dd></div>
-              <div class="ds-spec"><dt>Material</dt><dd>TBD</dd></div>
-              <div class="ds-spec"><dt>Layer height</dt><dd>TBD</dd></div>
-              <div class="ds-spec"><dt>Infill</dt><dd>TBD</dd></div>
-              <div class="ds-spec"><dt>Print time</dt><dd>TBD</dd></div>
-            </dl>
-            <span class="ds-open">Open write-up</span>
+          <div class="body">
+            <h3>Headphone Stand</h3>
+            <p>A wall-mounted stand with an extra hook for keys or anything else.</p>
+            <div class="tags"><span>Fusion 360</span><span>3D printed</span><span>Wall-mounted</span></div>
           </div>
         </a>
 
-        <div class="ds-reserved">
-          <div class="ds-entry ds-slot">
-            <span class="ds-partno">PRT-02</span>
-            <div>
-              <div class="ds-slot-label">Reserved</div>
-              <div class="ds-slot-sub">Build in progress</div>
-            </div>
-          </div>
-          <div class="ds-entry ds-slot">
-            <span class="ds-partno">PRT-03</span>
-            <div>
-              <div class="ds-slot-label">Reserved</div>
-              <div class="ds-slot-sub">Build in progress</div>
-            </div>
+        <div class="card coming">
+          <div class="thumb">Coming soon</div>
+          <div class="body">
+            <h3>Coming soon</h3>
+            <p>A new build in progress — write-up and 3D model on the way.</p>
           </div>
         </div>
+
+        <div class="card coming">
+          <div class="thumb">Coming soon</div>
+          <div class="body">
+            <h3>Coming soon</h3>
+            <p>A new build in progress — write-up and 3D model on the way.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
