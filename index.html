@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arshdeep — Hardware &amp; CAD Design</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Loads the 3D viewer so project cards can show a spinning model -->
+  <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+</head>
+<body>
+
+  <!-- ============ TOP NAV (same on every page) ============ -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">Arshdeep</a>
+      <nav class="nav">
+        <a href="index.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#custom">Custom request</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ INTRO ============ -->
+  <section class="hero">
+    <div class="wrap">
+      <a class="chip" href="#custom"><span class="dot"></span> Available for custom work</a>
+      <p class="eyebrow">Hardware &amp; CAD Design</p>
+      <!-- EDIT: your name and one-line intro -->
+      <h1>Hi, I'm Arshdeep<span class="accent">.</span></h1>
+      <p>High school student designing and building hardware. I use Fusion 360 to
+         take ideas from sketch to printed, working parts — and I share the whole
+         process, including what broke along the way.</p>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section class="projects">
+    <div class="wrap">
+      <div class="projects-head">
+        <p class="section-title">Everything I've designed so far</p>
+        <span class="legend"><i class="ld"></i> = 3D printable</span>
+      </div>
+
+      <!-- Placeholder cards until real projects are ready.
+           When you have a real project, just tell Claude the details and it will
+           turn one of these into a real card (+ build its project page). -->
+      <div class="grid">
+
+        <a class="card" href="project-headphone-stand.html">
+          <span class="printable-dot" title="3D printable"></span>
+          <div class="thumb thumb-3d">
+            <!-- Spinning 3D model as the thumbnail (non-interactive; click opens the project) -->
+            <model-viewer
+              src="models/headphone-stand.glb"
+              alt="Headphone stand 3D model"
+              auto-rotate
+              rotation-per-second="28deg"
+              interaction-prompt="none"
+              disable-zoom
+              shadow-intensity="0.4"
+              camera-orbit="30deg 75deg auto">
+            </model-viewer>
+          </div>
+          <div class="body">
+            <h3>Headphone Stand</h3>
+            <p>A wall-mounted stand with an extra hook for keys or anything else.</p>
+            <div class="tags"><span>Fusion 360</span><span>3D printed</span><span>Wall-mounted</span></div>
+          </div>
+        </a>
+
+        <div class="card coming">
+          <div class="thumb">Coming soon</div>
+          <div class="body">
+            <h3>Coming soon</h3>
+            <p>A new build in progress — write-up and 3D model on the way.</p>
+          </div>
+        </div>
+
+        <div class="card coming">
+          <div class="thumb">Coming soon</div>
+          <div class="body">
+            <h3>Coming soon</h3>
+            <p>A new build in progress — write-up and 3D model on the way.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================================================================
+           TURNING A PLACEHOLDER INTO A REAL PROJECT (when ready):
+           Easiest: tell Claude the project details — it builds the page + card.
+           Manual:
+             1. Copy project-template.html, fill in the [INSERT] parts, rename it.
+             2. Change a card above from <div class="card coming"> to
+                <a class="card" href="project-yourname.html">, and update the text
+                + add a <div class="tags">…</div> row.
+             3. If it's 3D printable, add inside the card:
+                <span class="printable-dot" title="3D printable"></span>
+                (and un-comment the legend in .projects-head above).
+      ================================================================= -->
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section class="pricing" id="pricing">
+    <div class="wrap">
+      <p class="section-title">Pricing</p>
+      <div class="price-card">
+        <div class="price-stats">
+          <div class="stat">
+            <div class="stat-figure"><span class="stat-value">10¢</span><span class="stat-unit">/gram</span></div>
+            <span class="stat-label">Printing</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <div class="stat-figure"><span class="stat-value">$5</span></div>
+            <span class="stat-label">Minimum order</span>
+          </div>
+        </div>
+        <p class="price-footnote">Custom designs quoted separately.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CUSTOM REQUEST (quiet subsection) ============ -->
+  <section class="custom" id="custom">
+    <div class="wrap">
+      <h2>Custom request</h2>
+      <p class="lede">Want something designed or printed? Tell me what you have in
+         mind and I'll get back to you by email.</p>
+
+      <form action="https://formspree.io/f/mzezbrpp" method="POST">
+        <div class="form-grid">
+          <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="full">
+            <label for="item">What would you like made?</label>
+            <textarea id="item" name="item description" required></textarea>
+          </div>
+          <div class="full">
+            <button class="submit" type="submit">Send request</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <span class="fbrand">Arshdeep</span>
+      <span class="fmeta">© 2026 · Built by hand with Fusion 360</span>
+    </div>
+  </footer>
+
+</body>
+</html>

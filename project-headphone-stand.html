@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Headphone Stand — Arshdeep</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">Arshdeep</a>
+      <nav class="nav">
+        <a href="index.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="index.html#custom">Custom request</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="project-hero">
+    <div class="wrap">
+      <a class="back-link" href="index.html">← Back to work</a>
+      <h1>Headphone Stand</h1>
+      <p class="tagline">A wall-mounted headphone stand with an extra hook for a keychain — or anything else.</p>
+      <div class="meta"><span>Fusion 360</span><span>3D printed</span><span>Wall-mounted</span></div>
+    </div>
+  </section>
+
+  <div class="project-body">
+    <div class="wrap">
+
+      <!-- 1. the problem -->
+      <section class="project-section">
+        <h2>The problem — why I made it</h2>
+        <p>I usually use my headphones when I'm at my desk, so I wanted a permanent
+           spot to keep them instead of leaving them lying around.</p>
+      </section>
+
+      <!-- 2. design process -->
+      <section class="project-section">
+        <h2>Design process &amp; key decisions</h2>
+        <p>I took measurements of multiple headphones using a caliper, and measured
+           their resting angle with a protractor. I averaged those values to design a
+           stand that fits a wide variety of different-sized headphones.</p>
+      </section>
+
+      <!-- 3. what went wrong -->
+      <section class="project-section">
+        <h2>What went wrong — and what I changed</h2>
+        <ul>
+          <li>At first my hook was a little too large, so it was conflicting with the headphone rest.</li>
+          <li>I used Fusion 360's scale tool to size the hook down and reposition it out of the way.</li>
+        </ul>
+      </section>
+
+      <!-- 4. final result (3D MODEL) -->
+      <section class="project-section">
+        <h2>Final result</h2>
+        <p>Drag to rotate, scroll to zoom.</p>
+
+        <model-viewer
+          src="models/headphone-stand.glb"
+          alt="3D model of the headphone stand"
+          camera-controls
+          auto-rotate
+          shadow-intensity="1">
+        </model-viewer>
+        <p class="viewer-hint">Your Fusion 360 model — drag to rotate, scroll to zoom.</p>
+
+        <!-- NO 3D EXPORT YET? Delete the <model-viewer> block above and use a photo:
+        <img class="result-photo" src="images/headphone-stand.jpg" alt="Finished headphone stand">
+        -->
+      </section>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span class="fbrand">Arshdeep</span>
+      <span class="fmeta">© 2026 · Built by hand with Fusion 360</span>
+    </div>
+  </footer>
+
+</body>
+</html>
