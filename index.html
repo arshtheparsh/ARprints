@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arshdeep — Custom 3D Printing &amp; CAD</title>
+  <title>ARprints — Custom 3D Printing &amp; CAD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <!-- 3D viewer for the project thumbnails -->
@@ -41,13 +41,17 @@
       background:radial-gradient(circle,rgba(34,211,238,.13),transparent 62%)}
 
     /* nav */
-    .nav{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:22px 34px}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:13px 34px;
+      background:rgba(10,10,12,.72);backdrop-filter:saturate(160%) blur(12px);-webkit-backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line)}
     .brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-d);font-weight:700;font-size:1.05rem}
     .brand::before{content:"";width:18px;height:18px;border-radius:5px;background:var(--text)}
     .nav .links{display:flex;gap:26px;align-items:center;font-size:.9rem;color:var(--muted)}
     .nav .links a:hover{color:var(--text)}
     .nav .cta{border:1px solid var(--line);padding:8px 16px;border-radius:999px;color:var(--text);font-size:.85rem}
     .nav .cta:hover{border-color:var(--accent);color:var(--accent)}
+    .nav .np{display:inline-flex;align-items:center;gap:8px;color:var(--muted);cursor:default}
+    .nav .np i{font-style:normal;font-family:var(--font-m);font-size:.72rem;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+    #projects,#custom,#contact{scroll-margin-top:76px}
 
     /* hero */
     .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 20px 80px;overflow:hidden}
@@ -139,7 +143,7 @@
     }
 
     @media (max-width:600px){
-      .nav{padding:18px 20px}.nav .links a:not(.cta){display:none}
+      .nav{padding:11px 18px}.nav .links a:not(.cta),.nav .links .np{display:none}
       .stage{height:44vh}
       .form-grid{grid-template-columns:1fr}
     }
@@ -151,10 +155,11 @@
   <div class="fx-glow" aria-hidden="true"></div>
 
   <nav class="nav">
-    <a class="brand" href="#top">Arshdeep</a>
+    <a class="brand" href="#top">ARprints</a>
     <div class="links">
-      <a href="#projects">Work</a>
+      <a href="#projects">Database</a>
       <a href="#custom">Custom request</a>
+      <span class="np">STL calculator <i>soon</i></span>
       <a class="cta" href="#contact">Get in touch</a>
     </div>
   </nav>
@@ -179,8 +184,8 @@
     <div class="copy">
       <p class="eyebrow">Custom 3D Printing &amp; CAD Design</p>
       <h1>Bring your idea to life.</h1>
-      <p class="sub">I design and 3D-print custom parts — and share the whole process,
-         including what broke along the way.</p>
+      <p class="sub">I design and 3D-print custom parts — and share the whole process.
+         </p>
       <div class="btns">
         <a class="btn btn-ghost" href="#projects">Explore pre-made projects</a>
         <a class="btn btn-primary" href="#custom">Custom request <span class="ar" aria-hidden="true">→</span></a>
@@ -197,12 +202,12 @@
     <div class="wrap">
       <div class="projects-head">
         <h2>Everything I've designed so far</h2>
-        <span class="legend"><i class="ld"></i> = 3D printable</span>
+        <span class="legend"><i class="ld"></i> =  </span>
       </div>
       <div class="grid">
 
         <a class="card" href="project-headphone-stand.html">
-          <span class="printable-dot" title="3D printable"></span>
+          <span class="printable-dot" ></span>
           <div class="thumb thumb-3d">
             <model-viewer src="models/headphone-stand.glb" alt="Headphone stand 3D model"
               auto-rotate rotation-per-second="28deg" interaction-prompt="none" disable-zoom
@@ -281,7 +286,7 @@
   </section>
 
   <footer>
-    <span>© 2026 Arshdeep</span>
+    <span>© 2026 ARprints</span>
     <span>Custom CAD &amp; 3D printing</span>
   </footer>
 
