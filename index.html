@@ -6,8 +6,21 @@
   <title>ARprints — Custom 3D Printing &amp; CAD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <!-- 3D viewer for the project thumbnails -->
+  <!-- 3D viewer for the hero printer and the project thumbnails -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script>
+    /* The scroll-driven ink between sections needs WebGL and a visitor who hasn't asked
+       for reduced motion. Without either, the static SVG edges are shown instead. */
+    (function(){
+      try{
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var gl = document.createElement('canvas').getContext('webgl');
+        if (!gl || !gl.getExtension('OES_standard_derivatives')) return;
+        var lose = gl.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext();
+        document.documentElement.classList.add('burn-on');
+      }catch(e){}
+    })();
+  </script>
   <style>
     :root{
       --bg:#0a0a0c; --text:#f5f5f7; --muted:#9a9aa6;
@@ -60,7 +73,8 @@
     .hero-rings{position:absolute;top:36%;left:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none;
       width:min(122vw,1120px);height:min(122vw,1120px);opacity:.16;color:var(--accent)}
     .stage{position:relative;z-index:2;width:min(92vw,640px);height:min(60vh,560px)}
-    .stage iframe{width:100%;height:100%;border:0;background:transparent;display:block}
+    .stage model-viewer{display:block;width:100%;height:100%;background:transparent;
+      --poster-color:transparent;--progress-bar-color:var(--accent);--progress-bar-height:2px}
     .copy{position:relative;z-index:3;margin-top:6px;max-width:640px}
     .eyebrow{font-family:var(--font-m);font-size:.82rem;letter-spacing:.02em;color:var(--muted);margin-bottom:16px}
     .hero h1{font-family:var(--font-d);font-weight:700;font-size:clamp(2.2rem,5vw,3.4rem);line-height:1.05;letter-spacing:-.02em}
@@ -80,25 +94,28 @@
     .scroll .arrow{width:20px;height:20px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);animation:bob 1.6s infinite}
     @keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0);opacity:.4}50%{transform:rotate(45deg) translate(4px,4px);opacity:1}}
 
-    /* colour transitions between sections */
-    .ink{position:relative;z-index:1;line-height:0;overflow:clip} /* clip, not hidden: hidden makes a scroll container and freezes the scroll timeline */
-    .ink svg.edge{display:block;width:100%;height:clamp(120px,17vw,230px)}
+    /* colour transitions between sections.
+       Normal case: a WebGL canvas (.burn) sits on top of a section and reaches one screen-height up over
+       the section before it; ink in this section's colour floods up it as you scroll (script at the bottom).
+       It overlaps its own section by 2px so there's never a hairline seam at the boundary.
+       Fallback (reduced motion / no WebGL): the static ragged SVG edges (.ink) below. */
+    .burn{display:none}
+    html.burn-on .burn{display:block;position:absolute;left:0;bottom:calc(100% - 2px);width:100%;height:100vh;z-index:2;pointer-events:none}
+    html.burn-on .ink{display:none}
+    .ink{position:relative;z-index:1;line-height:0;overflow:clip}
+    .ink svg.edge{display:block;width:100%;height:clamp(80px,10vw,140px)}
     .ink-white{background:#0a0a0c}          /* dark above; white ink spills down into projects */
     .ink-black{background:var(--bg-light)}  /* white above; dark ink spills down into form  */
     .ink-defs{position:absolute;width:0;height:0}
-    @media (prefers-reduced-motion:reduce){.ink svg.edge{height:clamp(80px,10vw,140px)}}
-    /* scroll-linked burn: the ink edge creeps upward as the divider passes through view */
-    @supports (animation-timeline: view()){
-      @media (prefers-reduced-motion:no-preference){
-        .ink{view-timeline:--ink block}
-        .ink svg.edge > rect{transform-box:fill-box;
-          animation:inkburn linear both;animation-timeline:--ink;animation-range:cover 0% cover 100%}
-      }
-    }
-    @keyframes inkburn{from{transform:translateY(72px)}to{transform:translateY(-52px)}}
 
     /* projects (light) */
-    .projects{background:var(--bg-light);color:var(--ink);padding:8px 0 96px}
+    .projects{position:relative;background:var(--bg-light);color:var(--ink);padding:8px 0 96px}
+    /* with the ink on: room at the top (no SVG edge any more), and empty runway at the bottom so the
+       dark ink has space to climb before it reaches the cards */
+    html.burn-on .projects{padding:clamp(76px,11vh,120px) 0 clamp(180px,34vh,380px)}
+    /* the flat dark ink meets this section's top edge; fade the blueprint grid in below it so there's no seam.
+       z-index 3 keeps this section's (dark) ink above the projects' (white) ink where they overlap on tall screens */
+    html.burn-on .custom{z-index:3;background:linear-gradient(var(--bg) 0,var(--bg) 40px,rgba(10,10,12,0) 340px)}
     .projects .wrap{max-width:1100px;margin:0 auto;padding:0 28px}
     .projects-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:34px}
     .projects h2{font-family:var(--font-d);font-weight:700;font-size:clamp(1.8rem,3.6vw,2.6rem);letter-spacing:-.02em;color:var(--ink)}
@@ -145,6 +162,8 @@
     .chip:hover{border-color:var(--accent);color:var(--text)}
 
     footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:26px 34px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--muted);font-family:var(--font-m);font-size:.78rem}
+    footer .credit a{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+    footer .credit a:hover{color:var(--text);text-decoration-color:currentColor}
 
     /* entrance */
     @media (prefers-reduced-motion:no-preference){
@@ -195,9 +214,13 @@
       <line x1="934" y1="500" x2="986" y2="500" stroke-width="1.5"/>
     </svg>
     <div class="stage">
-      <iframe class="printer-embed" title="3D Printer by CMFDesign"
-        allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"
-        src="https://sketchfab.com/models/e1f12750d0944bf9b1d2888919210112/embed?autostart=1&preload=1&autospin=0.3&ui_infos=0&ui_controls=0&ui_stop=0&ui_inspector=0&ui_watermark=0&ui_watermark_link=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_annotations=0&ui_hint=0&dnt=1&scrollwheel=0&ui_theme=dark&transparent=1"></iframe>
+      <!-- drag to turn it; zoom is off so the mouse wheel still scrolls the page -->
+      <model-viewer src="models/3d-printer.glb" alt="3D model of a desktop 3D printer, slowly turning"
+        camera-controls disable-zoom disable-pan interaction-prompt="none" touch-action="pan-y"
+        auto-rotate rotation-per-second="16deg" camera-orbit="-30deg 72deg auto"
+        min-camera-orbit="auto 35deg auto" max-camera-orbit="auto 95deg auto"
+        environment-image="neutral" tone-mapping="neutral" exposure="1.05"
+        shadow-intensity="0.9" shadow-softness="0.9" loading="eager"></model-viewer>
     </div>
     <div class="copy">
       <p class="eyebrow">Custom 3D Printing &amp; CAD Design</p>
@@ -221,6 +244,9 @@
 
   <!-- ============ PROJECTS (light) ============ -->
   <section class="projects" id="projects">
+    <!-- white ink that floods up over the hero as this section scrolls in -->
+    <canvas class="burn" aria-hidden="true" data-ink="#f5f6f7" data-rim="#22d3ee" data-rim-strength="0.5"
+      data-jump="0.08" data-speed="2" data-seed="1.7"></canvas>
     <div class="wrap">
       <div class="projects-head">
         <h2>Everything I've designed so far</h2>
@@ -271,6 +297,10 @@
 
   <!-- ============ CUSTOM REQUEST (dark) ============ -->
   <section class="custom" id="custom">
+    <!-- dark ink that floods up over the projects as this section scrolls in: starts slow in the empty
+         space under the cards, then speeds up (data-accel) -->
+    <canvas class="burn" aria-hidden="true" data-ink="#0a0a0c" data-rim-strength="0"
+      data-jump="0" data-speed="1.3" data-accel="1.2" data-seed="6.1"></canvas>
     <div class="wrap">
       <h2>Custom request</h2>
       <p class="lede">Want something designed or printed? Tell me what you have in mind
@@ -312,21 +342,214 @@
   </section>
 
   <footer>
-    <span>© 2026 ARprints</span>
-    <span>Custom CAD &amp; 3D printing</span>
+    <span>© 2026 ARprints · Custom CAD &amp; 3D printing</span>
+    <!-- required by the model's CC BY 4.0 licence: keep this credit while the printer model is on the page -->
+    <span class="credit">Printer model: <a href="https://sketchfab.com/3d-models/3d-printer-3150a227e54a419e956daba61610e904" target="_blank" rel="noopener">“3D Printer” by Michael V</a>,
+      <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, modified</span>
   </footer>
 
   <script>
     (function(){
-      var root=document.documentElement, px=0, py=0, ticking=false;
-      function apply(){ ticking=false; root.style.setProperty('--mx', px+'px'); root.style.setProperty('--my', py+'px'); }
-      function onMove(e){
+      /* ---------- cursor: drives the dot spotlight and pulls on the ink ---------- */
+      const root = document.documentElement;
+      const ptr = {x: -1e4, y: -1e4, on: false};
+      let ticking = false, wakeInk = () => {};
+      const paint = () => { ticking = false; root.style.setProperty('--mx', ptr.x + 'px'); root.style.setProperty('--my', ptr.y + 'px'); };
+      const onMove = e => {
         if (e.pointerType === 'touch') return;
-        px=e.clientX; py=e.clientY;
-        if (!ticking){ ticking=true; requestAnimationFrame(apply); }
+        ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true;
+        if (!ticking){ ticking = true; requestAnimationFrame(paint); }
+        wakeInk();
+      };
+      addEventListener('pointermove', onMove, {passive: true});
+      addEventListener('mousemove', onMove, {passive: true});
+      document.addEventListener('mouseleave', () => { ptr.on = false; });
+
+      /* ---------- scroll-driven ink between sections ----------
+         Each <canvas class="burn"> sits on the top edge of a section and reaches one screen-height up.
+         As that section scrolls in, ink in its colour floods up the screen, faster than the page moves,
+         with a torn noisy edge (same idea as an SVG turbulence + displacement filter), droplets flung
+         ahead of it, and a pull toward the cursor. It's scrubbed by scroll: scroll back up and it recedes.
+         Knobs on each canvas: data-ink (colour), data-rim / data-rim-strength (edge glow, 0 = off),
+         data-jump (how much ink bursts up on the first bit of scroll, in screen-heights),
+         data-speed (how many times faster than the page it climbs), data-accel (extra speed-up as it
+         goes), data-seed (a different number = a different edge shape). */
+      if (!root.classList.contains('burn-on')) return;
+
+      const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+      const FS = `#extension GL_OES_standard_derivatives : enable
+        precision highp float;
+        uniform vec2 uRes;              // canvas size, device px
+        uniform float uScale;           // device px per CSS px
+        uniform float uEdge;            // nominal ink edge, CSS px from the canvas top (ink below it)
+        uniform float uBase, uFill;     // section boundary (CSS px from the top), and 0-1 how solid the ink is there
+        uniform float uTime, uSeed, uSwell;
+        uniform vec3 uInk;
+        uniform vec4 uRim;              // rgb + strength
+        uniform vec3 uPtr;              // cursor x, y (CSS px, canvas space) + strength
+
+        float h12(vec2 p){ vec3 q = fract(vec3(p.xyx) * .1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
+        float vn(vec2 p){
+          vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+          return mix(mix(h12(i), h12(i + vec2(1., 0.)), f.x), mix(h12(i + vec2(0., 1.)), h12(i + vec2(1., 1.)), f.x), f.y);
+        }
+        float fbm(vec2 p){
+          float s = 0., a = .5;
+          for (int i = 0; i < 3; i++){ s += a * vn(p); p = p * 2.03 + vec2(1.7, 9.2); a *= .5; }
+          return s / .875;
+        }
+        // long slow swells so the front isn't a flat band
+        float swell(float x){ return (vn(vec2(x * .0021 + uSeed, uTime * .035)) - .5) * uSwell; }
+
+        void main(){
+          vec2 p = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) / uScale;   // CSS px, y grows downward
+          float d = p.y - uEdge;                                              // > 0 below the nominal edge
+          vec2 q = p * vec2(.015, .02) + uSeed * 5.3;
+          vec2 w = vec2(vn(q * .45 + vec2(uTime * .08, 3.1)), vn(q * .45 + vec2(7.7, -uTime * .08))) - .5;
+          float n = fbm(q + w * 1.3);
+          vec2 dp = p - uPtr.xy;
+          float field = d + swell(p.x) + 250. * (n - .5) + uPtr.z * 150. * exp(-dot(dp, dp) / 42000.);
+          field += uFill * max(0., 220. - (uBase - p.y));   // no holes touching the straight section edge
+
+          vec2 gr = vec2(dFdx(field), dFdy(field));
+          float sd = field / max(length(gr), 1e-3);                          // ~signed distance to the edge, device px
+          float a = clamp(sd + .5, 0., 1.);
+
+          // droplets flung ahead of the front: appear as it approaches, grow, then get swallowed
+          if (d < 40. && d > -400.) {
+            vec2 id = floor(p / 58.);
+            for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+              vec2 c = id + vec2(float(i), float(j));
+              if (h12(c * 1.37 + uSeed) > .2) continue;
+              vec2 ctr = (c + .25 + .5 * vec2(h12(c + 19.1), h12(c + 47.7))) * 58.;
+              float ahead = uEdge - swell(ctr.x) - ctr.y;
+              float reach = 40. + 150. * h12(c + 3.3);
+              float rad = (2. + 7.5 * h12(c + 7.9)) * smoothstep(reach, reach * .45, ahead);
+              if (rad > .05) {
+                float wob = .8 + .4 * vn(p * .21 + c * 7.3);                          // ragged, not a perfect circle
+                float ds = rad * wob - length((p - ctr) * vec2(1., .78));              // a little taller than wide
+                vec2 sat = ctr + vec2((h12(c + 5.1) - .5) * rad * 1.6, rad * (1.7 + h12(c + 2.9)));
+                ds = max(ds, rad * .45 - length(p - sat)) * uScale;                  // + a satellite drop trailing below
+                sd = max(sd, ds);
+                a = max(a, clamp(ds + .5, 0., 1.));
+              }
+            }
+          }
+          // hot rim just outside the ink
+          float o = min(sd, 0.) / uScale;
+          float rim = uRim.a * (.7 * exp(o / 1.1) + .3 * exp(o / 4.)) * smoothstep(-90., -8., field) * (1. - a);
+          gl_FragColor = vec4(uInk * a + uRim.rgb * rim, a + rim);
+        }`;
+
+      const UP = 390, DOWN = 240, HIDE = 380;   // how far the ink can reach above / below its nominal edge (CSS px)
+      const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+      const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+      const off = () => root.classList.remove('burn-on');   // anything goes wrong: fall back to the static edges
+
+      function link(gl){
+        const prog = gl.createProgram();
+        for (const [type, src] of [[gl.VERTEX_SHADER, VS], [gl.FRAGMENT_SHADER, FS]]) {
+          const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.warn(gl.getShaderInfoLog(s)); return null; }
+          gl.attachShader(prog, s);
+        }
+        gl.linkProgram(prog);
+        return gl.getProgramParameter(prog, gl.LINK_STATUS) ? prog : null;
       }
-      window.addEventListener('pointermove', onMove, {passive:true});
-      window.addEventListener('mousemove',  onMove, {passive:true});
+
+      const zones = [];
+      for (const cv of document.querySelectorAll('canvas.burn')) {
+        const gl = cv.getContext('webgl', {alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'low-power'});
+        const prog = gl && gl.getExtension('OES_standard_derivatives') && link(gl);
+        if (!prog) return off();
+        gl.useProgram(prog);
+        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+        const loc = gl.getAttribLocation(prog, 'p');
+        gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        const u = {};
+        for (const n of ['uRes', 'uScale', 'uEdge', 'uBase', 'uFill', 'uTime', 'uSeed', 'uSwell', 'uInk', 'uRim', 'uPtr']) u[n] = gl.getUniformLocation(prog, n);
+        const d = cv.dataset, ink = hex(d.ink || '#ffffff'), rim = hex(d.rim || '#22d3ee');
+        const num = (v, def) => (v === undefined || isNaN(parseFloat(v))) ? def : parseFloat(v);
+        gl.uniform3fv(u.uInk, ink);
+        gl.uniform4f(u.uRim, rim[0], rim[1], rim[2], num(d.rimStrength, 0));
+        gl.uniform1f(u.uSeed, num(d.seed, 1));
+        cv.addEventListener('webglcontextlost', e => { e.preventDefault(); off(); });
+        zones.push({cv, gl, u, ink, jump: num(d.jump, .08), speed: num(d.speed, 2), accel: num(d.accel, 0),
+                    visible: false, px: 0, py: 0, ps: 0, last: ''});
+      }
+
+      function size(z){
+        const w = z.cv.clientWidth, h = z.cv.clientHeight;
+        let s = Math.min(devicePixelRatio || 1, 1.5);
+        if (w * h * s * s > 2.4e6) s = Math.sqrt(2.4e6 / (w * h));   // cap the pixel count on big screens
+        z.cv.width = Math.round(w * s); z.cv.height = Math.round(h * s); z.last = '';
+      }
+
+      function draw(z, time, dt){
+        const r = z.cv.getBoundingClientRect(), V = innerHeight, H = r.height;
+        const B = H - 2;                                    // the section boundary, px from the canvas top
+        const t = (V - (r.top + B)) / V;                    // 0 when the boundary sits at the bottom of the screen
+        const ramp = smooth(0, .09, t);                     // first bit of scroll: the ink bursts into view
+        const tt = Math.max(t, 0);
+        const target = -HIDE + (HIDE + z.jump * V) * ramp + V * ((z.speed - 1) * tt + z.accel * tt * tt);
+        // a little inertia: the ink flows toward where the scroll says it should be instead of snapping
+        if (z.lead === undefined || dt > .5) z.lead = target;
+        else z.lead += (target - z.lead) * (1 - Math.exp(-dt / .14));
+        const lead = z.lead, settled = Math.abs(target - lead) < .5;
+        const edge = B - Math.min(lead, B + HIDE);
+
+        // ease the cursor pull so the ink follows it like a liquid
+        const tx = ptr.x - r.left, ty = ptr.y - r.top, ts = ptr.on ? ramp : 0;
+        if (z.ps < .002) { z.px = tx; z.py = ty; }
+        z.px += (tx - z.px) * .18; z.py += (ty - z.py) * .18; z.ps += (ts - z.ps) * .12;
+
+        const key = !settled ? 'live' : lead <= -HIDE + .5 ? 'empty' : r.top + edge + DOWN <= 0 ? 'full' : 'live';
+        if (key !== 'live' && key === z.last) return;       // nothing moving on screen: skip the frame
+        z.last = key;
+
+        const {gl, u} = z, W = z.cv.width, Hd = z.cv.height, s = Hd / H;
+        gl.viewport(0, 0, W, Hd);
+        gl.disable(gl.SCISSOR_TEST);
+        gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+        if (key === 'empty') return;
+        gl.enable(gl.SCISSOR_TEST);
+        const solid = Math.max(0, edge + DOWN);             // below this row it's plain ink
+        if (solid < H) {
+          gl.scissor(0, 0, W, Math.ceil((H - solid) * s));
+          gl.clearColor(z.ink[0], z.ink[1], z.ink[2], 1); gl.clear(gl.COLOR_BUFFER_BIT);
+        }
+        const y0 = Math.max(0, edge - UP), y1 = Math.min(H, edge + DOWN);
+        if (y1 > y0) {                                      // only shade the band where the edge actually is
+          gl.scissor(0, Math.floor((H - y1) * s), W, Math.ceil((y1 - y0) * s) + 1);
+          gl.uniform2f(u.uRes, W, Hd); gl.uniform1f(u.uScale, s); gl.uniform1f(u.uEdge, edge);
+          gl.uniform1f(u.uBase, B); gl.uniform1f(u.uFill, smooth(0, 60, lead));
+          gl.uniform1f(u.uSwell, 190 * Math.min(1, Math.max(.45, r.width / 1100)));   // gentler swells on phones
+          gl.uniform1f(u.uTime, time); gl.uniform3f(u.uPtr, z.px, z.py, z.ps);
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
+        }
+        gl.disable(gl.SCISSOR_TEST);
+      }
+
+      let running = false, prev = 0;
+      const frame = now => {
+        const dt = Math.min((now - prev) / 1000, 1); prev = now;
+        let any = false;
+        for (const z of zones) if (z.visible) { any = true; draw(z, (now % 1e7) / 1000, dt); }
+        if (any) requestAnimationFrame(frame); else running = false;
+      };
+      const wake = () => { if (!running && zones.some(z => z.visible)) { running = true; requestAnimationFrame(frame); } };
+      wakeInk = wake;
+
+      const ro = new ResizeObserver(() => { zones.forEach(size); wake(); });
+      const io = new IntersectionObserver(entries => {
+        for (const e of entries) {
+          const z = zones.find(z => z.cv === e.target);
+          if (z) { if (e.isIntersecting && !z.visible) z.lead = undefined; z.visible = e.isIntersecting; }
+        }
+        wake();
+      }, {rootMargin: '25% 0px'});
+      for (const z of zones) { size(z); ro.observe(z.cv); io.observe(z.cv); }
     })();
   </script>
 
