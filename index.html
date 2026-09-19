@@ -81,10 +81,20 @@
     @keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0);opacity:.4}50%{transform:rotate(45deg) translate(4px,4px);opacity:1}}
 
     /* colour transitions between sections */
-    .to-white{height:58vh;min-height:420px;background:linear-gradient(180deg,
-      #0a0a0c 0%,#0c0d10 14%,#15171b 27%,#25282e 39%,#3d4147 49%,#5d626b 59%,#878c94 70%,#b5b9be 82%,#dddee1 92%,var(--bg-light) 100%)}
-    .to-black{height:58vh;min-height:420px;background:linear-gradient(180deg,
-      var(--bg-light) 0%,#dddee1 8%,#b5b9be 18%,#878c94 30%,#5d626b 41%,#3d4147 51%,#25282e 61%,#15171b 73%,#0c0d10 86%,#0a0a0c 100%)}
+    .ink{position:relative;z-index:1;line-height:0;overflow:hidden}
+    .ink svg.edge{display:block;width:100%;height:clamp(120px,17vw,230px)}
+    .ink-white{background:#0a0a0c}          /* dark above; white ink spills down into projects */
+    .ink-black{background:var(--bg-light)}  /* white above; dark ink spills down into form  */
+    .ink-defs{position:absolute;width:0;height:0}
+    @media (prefers-reduced-motion:reduce){.ink svg.edge{height:clamp(80px,10vw,140px)}}
+    /* scroll-linked burn: the ink edge creeps upward as the divider passes through view */
+    @supports (animation-timeline: view()){
+      @media (prefers-reduced-motion:no-preference){
+        .ink svg.edge > rect{transform-box:fill-box;
+          animation:inkburn linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+      }
+    }
+    @keyframes inkburn{from{transform:translateY(72px)}to{transform:translateY(-52px)}}
 
     /* projects (light) */
     .projects{background:var(--bg-light);color:var(--ink);padding:8px 0 96px}
@@ -154,6 +164,13 @@
   <div class="fx-dots" aria-hidden="true"></div>
   <div class="fx-glow" aria-hidden="true"></div>
 
+  <svg class="ink-defs" aria-hidden="true"><defs>
+    <filter id="inkedge" x="-15%" y="-60%" width="130%" height="220%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.009 0.02" numOctaves="4" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="92" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs></svg>
+
   <nav class="nav">
     <a class="brand" href="#top">ARprints</a>
     <div class="links">
@@ -195,7 +212,11 @@
   </header>
 
   <!-- black → white -->
-  <div class="to-white" aria-hidden="true"></div>
+  <div class="ink ink-white" aria-hidden="true">
+    <svg class="edge" viewBox="0 0 1440 230" preserveAspectRatio="none">
+      <rect x="-140" y="66" width="1720" height="360" fill="#f5f6f7" filter="url(#inkedge)"/>
+    </svg>
+  </div>
 
   <!-- ============ PROJECTS (light) ============ -->
   <section class="projects" id="projects">
@@ -241,7 +262,11 @@
   </section>
 
   <!-- white → black -->
-  <div class="to-black" aria-hidden="true"></div>
+  <div class="ink ink-black" aria-hidden="true">
+    <svg class="edge" viewBox="0 0 1440 230" preserveAspectRatio="none">
+      <rect x="-140" y="66" width="1720" height="360" fill="#0a0a0c" filter="url(#inkedge)"/>
+    </svg>
+  </div>
 
   <!-- ============ CUSTOM REQUEST (dark) ============ -->
   <section class="custom" id="custom">
