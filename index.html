@@ -81,7 +81,7 @@
     @keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0);opacity:.4}50%{transform:rotate(45deg) translate(4px,4px);opacity:1}}
 
     /* colour transitions between sections */
-    .ink{position:relative;z-index:1;line-height:0;overflow:hidden}
+    .ink{position:relative;z-index:1;line-height:0;overflow:clip} /* clip, not hidden: hidden makes a scroll container and freezes the scroll timeline */
     .ink svg.edge{display:block;width:100%;height:clamp(120px,17vw,230px)}
     .ink-white{background:#0a0a0c}          /* dark above; white ink spills down into projects */
     .ink-black{background:var(--bg-light)}  /* white above; dark ink spills down into form  */
@@ -90,8 +90,9 @@
     /* scroll-linked burn: the ink edge creeps upward as the divider passes through view */
     @supports (animation-timeline: view()){
       @media (prefers-reduced-motion:no-preference){
+        .ink{view-timeline:--ink block}
         .ink svg.edge > rect{transform-box:fill-box;
-          animation:inkburn linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+          animation:inkburn linear both;animation-timeline:--ink;animation-range:cover 0% cover 100%}
       }
     }
     @keyframes inkburn{from{transform:translateY(72px)}to{transform:translateY(-52px)}}
