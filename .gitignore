@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# local tool state, not part of the site
+.claude/settings.local.json
+.impeccable/hook.cache.json
+
+# source/scratch files the site doesn't serve (kept on disk, just not published)
+models/_stand_geom.pkl
+models/printer.glb
+models/Armadillo Headphones - 3903085/
