@@ -76,18 +76,26 @@
       transform:translate(calc(var(--mx,-1000px) - 210px),calc(var(--my,-1000px) - 210px));
       background:radial-gradient(circle,rgba(34,211,238,.13),transparent 62%)}
 
-    /* nav */
-    .nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:13px 34px;
-      background:rgba(10,10,12,.72);backdrop-filter:saturate(160%) blur(12px);-webkit-backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line)}
+    /* nav: a floating pill, items spread across it rather than bunched on the right */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:50;padding:12px 16px;pointer-events:none}
+    .nav-bar{pointer-events:auto;max-width:1120px;margin:0 auto;height:58px;padding:0 10px 0 22px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      border-radius:999px;border:1px solid rgba(34,211,238,.16);
+      /* .82 not .72: over the light section a thinner tint washes the pill out and the links lose contrast */
+      background:rgba(10,10,12,.82);backdrop-filter:saturate(160%) blur(16px);-webkit-backdrop-filter:saturate(160%) blur(16px);
+      box-shadow:0 12px 32px rgba(0,0,0,.4)}
     .brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-d);font-weight:700;font-size:1.05rem}
-    .brand::before{content:"";width:18px;height:18px;border-radius:5px;background:var(--text)}
-    .nav .links{display:flex;gap:26px;align-items:center;font-size:.9rem;color:var(--muted)}
-    .nav .links a:hover{color:var(--text)}
-    .nav .cta{border:1px solid var(--line);padding:8px 16px;border-radius:999px;color:var(--text);font-size:.85rem}
-    .nav .cta:hover{border-color:var(--accent);color:var(--accent)}
-    .nav .np{display:inline-flex;align-items:center;gap:8px;color:var(--muted);cursor:default}
-    .nav .np i{font-style:normal;font-family:var(--font-m);font-size:.72rem;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
-    #projects,#custom,#contact{scroll-margin-top:76px}
+    .brand::before{content:"";width:18px;height:18px;border-radius:6px;background:var(--accent)}
+    .nav .links{display:flex;align-items:center;flex:1;justify-content:space-evenly;gap:6px;font-size:.9rem;color:#b9bcc4}
+    .nav .links a{padding:9px 14px;border-radius:999px;transition:color .15s ease,background .15s ease}
+    .nav .links a:hover{color:var(--accent);background:rgba(34,211,238,.08)}
+    .nav .links a.is-here{color:var(--accent);background:rgba(34,211,238,.12)}   /* section you're looking at */
+    .nav .cta{border:1px solid rgba(34,211,238,.4);padding:9px 18px;border-radius:999px;color:var(--text);font-size:.85rem;
+      transition:color .15s ease,background .15s ease,border-color .15s ease}
+    .nav .cta:hover,.nav .cta.is-here{background:var(--accent);border-color:var(--accent);color:#08171c}
+    .nav .np{display:inline-flex;align-items:center;gap:8px;color:#a9acb5;cursor:default;padding:9px 6px}
+    .nav .np i{font-style:normal;font-family:var(--font-m);font-size:.72rem;color:var(--accent);border:1px solid rgba(34,211,238,.3);border-radius:999px;padding:2px 8px}
+    #projects,#custom,#contact{scroll-margin-top:88px}
 
     /* hero */
     .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 20px 80px;overflow:hidden}
@@ -213,7 +221,10 @@
     }
 
     @media (max-width:600px){
-      .nav{padding:11px 18px}.nav .links a:not(.cta),.nav .links .np{display:none}
+      .nav{padding:10px 12px}
+      .nav-bar{height:52px;padding:0 8px 0 16px}
+      .nav .links{display:none}
+      .nav .cta{padding:13px 18px}   /* 44px tall: thumb-sized */
       .stage{height:44vh}
       .form-grid{grid-template-columns:1fr}
     }
@@ -233,11 +244,13 @@
   </defs></svg>
 
   <nav class="nav">
-    <a class="brand" href="#top">ARprints</a>
-    <div class="links">
-      <a href="#projects">Projects</a>
-      <a href="#custom">Custom request</a>
-      <span class="np">STL calculator <i>soon</i></span>
+    <div class="nav-bar">
+      <a class="brand" href="#top">ARprints</a>
+      <div class="links">
+        <a href="#projects">Projects</a>
+        <a href="#custom">Custom request</a>
+        <span class="np">STL calculator <i>soon</i></span>
+      </div>
       <a class="cta" href="#contact">Get in touch</a>
     </div>
   </nav>
@@ -407,6 +420,20 @@
       addEventListener('pointermove', onMove, {passive: true});
       addEventListener('mousemove', onMove, {passive: true});
       document.addEventListener('mouseleave', () => { ptr.on = false; });
+
+      /* ---------- nav: light up the link for the section you're looking at ---------- */
+      const navLink = {};
+      for (const a of document.querySelectorAll('.nav a[href^="#"]')) navLink[a.getAttribute('href').slice(1)] = a;
+      const spy = new IntersectionObserver(entries => {
+        for (const e of entries) {
+          const a = navLink[e.target.id];
+          if (a) a.classList.toggle('is-here', e.isIntersecting);
+        }
+      }, {rootMargin: '-45% 0px -45% 0px'});   // "here" = whatever crosses the middle of the screen
+      for (const id of ['projects', 'custom', 'contact']) {
+        const el = document.getElementById(id);
+        if (el) spy.observe(el);
+      }
 
       /* ---------- scroll-driven ink between sections ----------
          Each <canvas class="burn"> sits on the top edge of a section and reaches one screen-height up.
