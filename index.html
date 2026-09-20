@@ -102,6 +102,10 @@
     .burn{display:none}
     html.burn-on .burn{display:block;position:absolute;left:0;bottom:calc(100% - 2px);width:100%;height:100vh;z-index:2;pointer-events:none}
     html.burn-on .ink{display:none}
+    /* dark runway under the hero: empty black for the ink to climb through, so it doesn't reach the
+       headline the moment you start scrolling. Taller = the hero stays readable longer. */
+    .runway{display:none}
+    html.burn-on .runway{display:block;height:clamp(200px,34vh,420px)}
     .ink{position:relative;z-index:1;line-height:0;overflow:clip}
     .ink svg.edge{display:block;width:100%;height:clamp(80px,10vw,140px)}
     .ink-white{background:#0a0a0c}          /* dark above; white ink spills down into projects */
@@ -235,6 +239,8 @@
     <a class="scroll" href="#projects"><span>Scroll</span><span class="arrow"></span></a>
   </header>
 
+  <div class="runway" aria-hidden="true"></div>
+
   <!-- black → white -->
   <div class="ink ink-white" aria-hidden="true">
     <svg class="edge" viewBox="0 0 1440 230" preserveAspectRatio="none">
@@ -246,7 +252,7 @@
   <section class="projects" id="projects">
     <!-- white ink that floods up over the hero as this section scrolls in -->
     <canvas class="burn" aria-hidden="true" data-ink="#f5f6f7" data-rim="#22d3ee" data-rim-strength="0.5"
-      data-jump="0.08" data-speed="2" data-seed="1.7"></canvas>
+      data-jump="0.04" data-speed="1.5" data-seed="1.7"></canvas>
     <div class="wrap">
       <div class="projects-head">
         <h2>Everything I've designed so far</h2>
@@ -300,7 +306,7 @@
     <!-- dark ink that floods up over the projects as this section scrolls in: starts slow in the empty
          space under the cards, then speeds up (data-accel) -->
     <canvas class="burn" aria-hidden="true" data-ink="#0a0a0c" data-rim-strength="0"
-      data-jump="0" data-speed="1.3" data-accel="1.2" data-seed="6.1"></canvas>
+      data-jump="0" data-speed="1.2" data-accel="0.9" data-seed="6.1"></canvas>
     <div class="wrap">
       <h2>Custom request</h2>
       <p class="lede">Want something designed or printed? Tell me what you have in mind
@@ -490,12 +496,14 @@
         const r = z.cv.getBoundingClientRect(), V = innerHeight, H = r.height;
         const B = H - 2;                                    // the section boundary, px from the canvas top
         const t = (V - (r.top + B)) / V;                    // 0 when the boundary sits at the bottom of the screen
-        const ramp = smooth(0, .09, t);                     // first bit of scroll: the ink bursts into view
+        // the ink rises into view just before the section's own straight edge reaches the screen,
+        // so that hard edge is never seen; negative t = the boundary is still below the fold
+        const ramp = smooth(-.35, .05, t);
         const tt = Math.max(t, 0);
         const target = -HIDE + (HIDE + z.jump * V) * ramp + V * ((z.speed - 1) * tt + z.accel * tt * tt);
         // a little inertia: the ink flows toward where the scroll says it should be instead of snapping
         if (z.lead === undefined || dt > .5) z.lead = target;
-        else z.lead += (target - z.lead) * (1 - Math.exp(-dt / .14));
+        else z.lead += (target - z.lead) * (1 - Math.exp(-dt / .18));
         const lead = z.lead, settled = Math.abs(target - lead) < .5;
         const edge = B - Math.min(lead, B + HIDE);
 
@@ -523,7 +531,7 @@
         if (y1 > y0) {                                      // only shade the band where the edge actually is
           gl.scissor(0, Math.floor((H - y1) * s), W, Math.ceil((y1 - y0) * s) + 1);
           gl.uniform2f(u.uRes, W, Hd); gl.uniform1f(u.uScale, s); gl.uniform1f(u.uEdge, edge);
-          gl.uniform1f(u.uBase, B); gl.uniform1f(u.uFill, smooth(0, 60, lead));
+          gl.uniform1f(u.uBase, B); gl.uniform1f(u.uFill, smooth(-60, 40, lead));
           gl.uniform1f(u.uSwell, 190 * Math.min(1, Math.max(.45, r.width / 1100)));   // gentler swells on phones
           gl.uniform1f(u.uTime, time); gl.uniform3f(u.uPtr, z.px, z.py, z.ps);
           gl.drawArrays(gl.TRIANGLES, 0, 3);
