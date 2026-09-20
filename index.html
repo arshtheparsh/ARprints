@@ -35,15 +35,38 @@
     body{background:var(--bg);color:var(--text);font-family:var(--font-b);-webkit-font-smoothing:antialiased;overflow-x:hidden}
     a{color:inherit;text-decoration:none}
 
-    /* base dotted texture + cursor spotlight (all sit BEHIND content) */
+    /* browser surfaces: selection, focus ring, caret and scrollbar shouldn't be left at the defaults */
+    :root{color-scheme:dark}
+    ::selection{background:rgba(34,211,238,.3);color:var(--text)}
+    .projects ::selection{background:rgba(34,211,238,.45);color:var(--ink)}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    input,textarea{caret-color:var(--accent)}
+    /* the page runs dark then light, so the scrollbar stays neutral on both */
+    html{scrollbar-width:thin;scrollbar-color:rgba(138,146,158,.55) transparent}
+    ::-webkit-scrollbar{width:12px;height:12px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(138,146,158,.5);border:3px solid transparent;background-clip:padding-box;border-radius:99px}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(138,146,158,.75);border:3px solid transparent;background-clip:padding-box}
+
+    /* The dark half is a CAD viewport: a 132px drawing grid with a snap dot at every crossing,
+       fine dots between, grain so it reads as a surface, and a vignette. All sit BEHIND content.
+       The light half (.projects) uses the same grid inverted, like drafting paper. */
     body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
       background-image:
-        linear-gradient(rgba(34,211,238,.035) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(34,211,238,.035) 1px,transparent 1px),
+        radial-gradient(circle,rgba(34,211,238,.18) 0 1.1px,transparent 1.7px),
+        linear-gradient(rgba(34,211,238,.038) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(34,211,238,.038) 1px,transparent 1px),
         radial-gradient(circle,rgba(255,255,255,.05) 1px,transparent 1.3px);
-      background-size:132px 132px,132px 132px,26px 26px;}
+      background-size:132px 132px,132px 132px,132px 132px,26px 26px;
+      background-position:-66px -66px,0 0,0 0,0 0;}  /* snap dots land on the grid crossings */
     body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-      background:radial-gradient(ellipse 100% 85% at 50% 40%,transparent 56%,rgba(0,0,0,.55) 100%);}
+      background:
+        radial-gradient(ellipse 120% 80% at 50% 30%,rgba(34,211,238,.05),transparent 62%),
+        radial-gradient(ellipse 100% 85% at 50% 40%,transparent 56%,rgba(0,0,0,.55) 100%);}
+    /* grain: keeps flat fills from looking like flat fills, and kills gradient banding */
+    .fx-grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.075;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+      background-size:180px 180px}
     .fx-dots{position:fixed;inset:0;z-index:-1;pointer-events:none;
       background-image:radial-gradient(circle,rgba(255,255,255,.6) 1px,transparent 1.5px);
       background-size:26px 26px;
@@ -112,8 +135,20 @@
     .ink-black{background:var(--bg-light)}  /* white above; dark ink spills down into form  */
     .ink-defs{position:absolute;width:0;height:0}
 
-    /* projects (light) */
-    .projects{position:relative;background:var(--bg-light);color:var(--ink);padding:8px 0 96px}
+    /* projects (light): drafting paper — the same drawing grid inverted, plus paper grain.
+       The texture fades in below the section's top edge so it meets the flat ink flood with no seam. */
+    .projects{position:relative;color:var(--ink);padding:8px 0 96px;
+      background-color:var(--bg-light);
+      background-image:
+        linear-gradient(var(--bg-light) 0,rgba(245,246,247,0) 340px),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23p)' opacity='0.12'/%3E%3C/svg%3E"),
+        radial-gradient(circle,rgba(20,21,26,.10) 0 1.1px,transparent 1.7px),
+        linear-gradient(rgba(20,21,26,.05) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(20,21,26,.05) 1px,transparent 1px),
+        radial-gradient(circle,rgba(20,21,26,.04) 1px,transparent 1.3px);
+      background-size:100% 340px,180px 180px,132px 132px,132px 132px,132px 132px,26px 26px;
+      background-position:0 0,0 0,-66px -66px,0 0,0 0,0 0;
+      background-repeat:no-repeat,repeat,repeat,repeat,repeat,repeat}
     /* with the ink on: room at the top (no SVG edge any more), and empty runway at the bottom so the
        dark ink has space to climb before it reaches the cards */
     html.burn-on .projects{padding:clamp(76px,11vh,120px) 0 clamp(180px,34vh,380px)}
@@ -127,6 +162,7 @@
     .legend .ld{width:10px;height:10px;border-radius:50%;background:#16a34a}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
     .card{position:relative;display:block;border:1px solid var(--line-light);border-radius:16px;overflow:hidden;background:var(--surface);color:var(--ink);
+      box-shadow:0 1px 2px rgba(20,21,26,.05),0 10px 26px rgba(20,21,26,.05);  /* lifts the card off the paper */
       transition:transform .2s ease,box-shadow .2s ease}
     a.card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(20,21,26,.10)}
     .card .thumb{aspect-ratio:4/3;background:#e9ebee;display:flex;align-items:center;justify-content:center;color:#5b616b;font-family:var(--font-m);font-size:.78rem;border-bottom:1px solid var(--line-light);overflow:hidden}
@@ -187,6 +223,7 @@
 
   <div class="fx-dots" aria-hidden="true"></div>
   <div class="fx-glow" aria-hidden="true"></div>
+  <div class="fx-grain" aria-hidden="true"></div>
 
   <svg class="ink-defs" aria-hidden="true"><defs>
     <filter id="inkedge" x="-15%" y="-60%" width="130%" height="220%" color-interpolation-filters="sRGB">
@@ -198,7 +235,7 @@
   <nav class="nav">
     <a class="brand" href="#top">ARprints</a>
     <div class="links">
-      <a href="#projects">Database</a>
+      <a href="#projects">Projects</a>
       <a href="#custom">Custom request</a>
       <span class="np">STL calculator <i>soon</i></span>
       <a class="cta" href="#contact">Get in touch</a>
