@@ -193,6 +193,10 @@
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
     .form-grid .full{grid-column:1/-1}
     label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:7px}
+    label .opt{font-family:var(--font-m);font-size:.68rem;color:#7f828c;border:1px solid var(--line);border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:1px}
+    .hint{margin-top:8px;font-size:.8rem;line-height:1.5;color:#9a9da6}
+    .hint a{color:var(--accent);text-decoration:underline;text-decoration-color:rgba(34,211,238,.4);text-underline-offset:3px}
+    .hint a:hover{text-decoration-color:var(--accent)}
     input,textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;color:var(--text);
       background:rgba(255,255,255,.04);transition:border-color .15s,box-shadow .15s}
     input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,211,238,.18)}
@@ -376,6 +380,13 @@
           <div class="full">
             <label for="item">What would you like made? The more detailed the better</label>
             <textarea id="item" name="item description" required></textarea>
+          </div>
+          <div class="full">
+            <label for="ref">Reference photo or sketch <span class="opt">optional</span></label>
+            <input type="url" id="ref" name="reference link" placeholder="Paste a link — Google Drive, Photos, Imgur, a product page">
+            <p class="hint">Or email pictures straight to
+              <a href="mailto:arsh3dp@gmail.com?subject=ARprints%20reference%20photos">arsh3dp@gmail.com</a>
+              and I'll match them to your request.</p>
           </div>
           <div class="full">
             <button class="submit" type="submit">Send request</button>
