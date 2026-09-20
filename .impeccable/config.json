@@ -32,6 +32,15 @@
         ],
         "createdAt": "2026-09-18T17:32:29.303Z",
         "reason": "user confirmed: cursor-reactive glow ('dots light up where your cursor is'); tracks the pointer, an interactive effect not a static decorative spotlight (re-scoped from landing.html after homepage rename)"
+      },
+      {
+        "rule": "buried-raster",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-20T19:30:08.578Z",
+        "reason": "Agent: film grain at 0.075 over #0a0a0c measures levels 11-24 (sd 1.7) composited, so it does reach the screen; rule targets photos buried under a wash"
       }
     ]
   }
