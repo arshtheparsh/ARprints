@@ -206,8 +206,10 @@
     .contact h2{font-family:var(--font-d);font-weight:700;font-size:clamp(1.6rem,3.2vw,2.2rem);letter-spacing:-.02em;margin-bottom:14px}
     .contact p{color:var(--muted);max-width:440px;margin:0 auto 26px;line-height:1.6}
     .chips{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-    .chip{border:1px solid var(--line);border-radius:999px;padding:9px 18px;font-family:var(--font-m);font-size:.82rem;color:var(--muted)}
-    .chip:hover{border-color:var(--accent);color:var(--text)}
+    .chip{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:999px;padding:11px 18px;
+      font-family:var(--font-m);font-size:.82rem;color:#b9bcc4;transition:color .15s ease,border-color .15s ease,background .15s ease}
+    .chip:hover{border-color:var(--accent);color:var(--text);background:rgba(34,211,238,.08)}
+    .chip svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--accent);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 
     footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:26px 34px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--muted);font-family:var(--font-m);font-size:.78rem}
     footer .credit a{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
@@ -320,7 +322,7 @@
           <div class="body">
             <h3>Headphone Stand</h3>
             <p>A wall-mounted stand with an extra hook for keys or anything else.</p>
-            <div class="tags"><span>Fusion 360</span><span>3D printed</span><span>Wall-mounted</span></div>
+            <div class="tags"><span>Fusion 360</span><span>Uses Double-sided Tape</span><span>Wall-mounted</span></div>
           </div>
         </a>
 
@@ -388,11 +390,12 @@
     <div class="wrap">
       <h2>Get in touch</h2>
       <p>Questions, or a project in mind? Reach out — I'll get back to you.</p>
-      <!-- EDIT: replace # with your real links -->
       <div class="chips">
-        <a class="chip" href="#">Email</a>
-        <a class="chip" href="#">Instagram</a>
-        <a class="chip" href="#">Discord</a>
+        <a class="chip" href="mailto:arsh3dp@gmail.com?subject=ARprints%20custom%20request">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg>
+          arsh3dp@gmail.com
+        </a>
+        <!-- Instagram + phone chips go here once Arshdeep sends the handle and number -->
       </div>
     </div>
   </section>
